@@ -43,7 +43,9 @@
                 @Html.DisplayFor(modelItem => item.IdDepartamento)
             </td>
             <td>
-                <a class="btn btn-info" asp-controller="Empleados" asp-action="Details" asp-route-id="@item.IdEmpleado">Details</a>
+                    <a class="btn btn-info" asp-controller="Empleados" asp-action="Details" asp-route-id="@item.IdEmpleado">Details</a>
+                    <a class="btn btn-danger" asp-controller="Empleados" asp-action="Delete" asp-route-id="@item.IdEmpleado">Eliminar</a>
+                    <a class="btn btn-warning" asp-controller="Empleados" asp-action="DeleteV2" asp-route-id="@item.IdEmpleado">Eliminar V2</a>
             </td>
         </tr>
 }

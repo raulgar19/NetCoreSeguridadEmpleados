@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace NetCoreSeguridadEmpleados.Filters
 {
@@ -9,18 +10,34 @@ namespace NetCoreSeguridadEmpleados.Filters
         public void OnAuthorization(AuthorizationFilterContext context)
         {
             var user = context.HttpContext.User;
-            if (user.Identity.IsAuthenticated == false)
+
+            string controller = context.RouteData.Values["controller"].ToString();
+            string action = context.RouteData.Values["action"].ToString();
+
+            var id = context.RouteData.Values["id"];
+
+            ITempDataProvider provider = context.HttpContext.RequestServices.GetService<ITempDataProvider>();
+
+            var tempData = provider.LoadTempData(context.HttpContext);
+
+            tempData["controller"] = controller;
+            tempData["action"] = action;
+
+
+            if (id != null)
             {
-                context.Result = this.GetRoute("Managed", "Login");
+                tempData["id"] = id.ToString();
             }
             else
             {
-                if (user.IsInRole("PRESIDENTE") == false
-                    && user.IsInRole("DIRECTOR") == false
-                    && user.IsInRole("ANALISTA") == false)
-                {
-                    context.Result = this.GetRoute("Managed", "ErrorAcceso");
-                }
+                tempData.Remove("id");
+            }
+
+            provider.SaveTempData(context.HttpContext, tempData);
+
+            if (user.Identity.IsAuthenticated == false)
+            {
+                context.Result = this.GetRoute("Managed", "Login");
             }
         }
 

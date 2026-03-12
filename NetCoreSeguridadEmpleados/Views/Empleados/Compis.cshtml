@@ -9,6 +9,16 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+@if(Context.User.IsInRole("presidente") || Context.User.IsInRole("DIRECTOR"))
+{
+    <form method="post">
+        <label>Incremento salarial: </label>
+        <input type="text" name="incremento" class="form-control" />
+        <button class="btn btn-info">A subir salarios!!!</button>
+    </form>
+}
+
 <table class="table table-warning">
     <thead>
         <tr>

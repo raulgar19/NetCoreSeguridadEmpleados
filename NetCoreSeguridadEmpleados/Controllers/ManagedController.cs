@@ -33,6 +33,12 @@ namespace NetCoreSeguridadEmpleados.Controllers
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     ClaimTypes.Name, ClaimTypes.Role);
 
+                if (empleado.IdEmpleado == 7499)
+                {
+                    Claim claimAdmin = new Claim("Admin", "Soy el amo de la empresa");
+                    identity.AddClaim(claimAdmin);
+                }
+
                 Claim claimName = new Claim(ClaimTypes.Name, username);
                 Claim claimId = new Claim(ClaimTypes.NameIdentifier, empleado.IdEmpleado.ToString());
                 Claim claimRole = new Claim(ClaimTypes.Role, empleado.Oficio);
@@ -51,7 +57,19 @@ namespace NetCoreSeguridadEmpleados.Controllers
                     CookieAuthenticationDefaults.AuthenticationScheme,
                     userPrincipal);
 
-                return RedirectToAction("PerfilEmpleado", "Empleados");
+                string controller = TempData["CONTROLLER"].ToString();
+                string action = TempData["ACTION"].ToString();
+
+                if (TempData["id"] != null)
+                {
+                    string id = TempData["id"].ToString();
+
+                    return RedirectToAction(action, controller, new { id = id });
+                }
+                else
+                {
+                    return RedirectToAction(action, controller);
+                }
             }
             else
             {
